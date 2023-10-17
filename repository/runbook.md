@@ -1,5 +1,5 @@
-## CI/CD Pipeline Project Using AWS Native SDLC Automation Tools
-![CompleteAWSNativeCICDProject!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/advanced_aws_native_cicd_project.png)
+# CI/CD Pipeline Project Using AWS Native SDLC Automation Tools
+![CompleteAWSNativeCICDProject!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/aws_native_project_v2.2.png)
 
 ###### Project ToolBox 🧰
 - [CodeCommit](https://aws.amazon.com/codecommit/) CodeCommit is a secure, highly scalable, fully managed source control service that hosts private Git repositories.
@@ -8,13 +8,11 @@
 - [CodeDeploy](https://aws.amazon.com/codedeploy/) CodeDeploy is a fully managed deployment service that automates software deployments to various compute services, such as EC2, ECS, Lambda, and on-premises.
 - [CodePipeline](https://aws.amazon.com/codepipeline/) CodePipeline is a fully managed continuous delivery service that helps you automate your release pipelines for fast and reliable application and infrastructure updates.
 - [Amazon S3](https://aws.amazon.com/s3/) Amazon S3 is an object storage service offering industry-leading scalability, data availability, security, and performance.
-- [AWS ChatBot](https://aws.amazon.com/chatbot/) AWS Chatbot lets you monitor, troubleshoot, and operate your AWS environments natively from within your chat channels.
-- [Slack](https://slack.com/) Slack is a communication platform designed for collaboration which can be leveraged to build and develop a very robust DevOps culture. Will be used for Continuous feedback loop.
 - [EC2](https://aws.amazon.com/ec2/) EC2 allows users to rent virtual computers (EC2) to run their own workloads and applications.
 - [CloudWatch Metrics](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/working_with_metrics.html) Amazon CloudWatch can load all the metrics in your account (both AWS resource metrics and application metrics that you provide) for search, graphing, and alarms.
 - [CloudWatch Logs](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/WhatIsCloudWatchLogs.html) You can use CloudWatch Logs to monitor applications and systems using log data. 
-- [Amazon SNS](https://aws.amazon.com/sns/) Amazon SNS is a Message Bus use to send notifications. It provides high-throughput, push-based, many-to-many messaging between distributed systems, microservices, and event-driven serverless applications. 
-- [PMD SAST](https://docs.pmd-code.org/latest/) PMD (Programming Mistake Detector) is a static source code analyzer. It finds common programming flaws like unused variables, empty catch blocks, unnecessary object creation, and so forth. It’s mainly concerned with Java and Apex, but supports 16 other languages.
+- [Amazon SNS](https://aws.amazon.com/sns/) Amazon SNS sends notifications two ways and provides high-throughput, push-based, many-to-many messaging between distributed systems, microservices, and event-driven serverless applications. 
+- [SonarCloud](https://sonarcloud.io/) SonarCloud is a cloud-based code analysis service designed to detect coding issues in 26 different programming languages.
 
 **NOTE:** 
 a) Navigate to a Region on AWS that has all the AWS Code services (CodeCommit, CodeBuild, CodeArtifact, CodeDeploy and CodePipeline)
@@ -60,7 +58,7 @@ b) You must Login as an IAM User before you can complete the below steps success
     - Select `Service Role`
     - Search/Select `CodeDeploy`
         - Click on `Next` 
-        - Attach Policy: `AdministratorAccess` (Attach this after creating the Role)
+        - Attach Policy: `AdministratorAccess`
         - Click `Next` 
         - Role Name: `AWS-CodeDeploy-Deployment-Role`
         - Click `Create`
@@ -73,67 +71,44 @@ b) You must Login as an IAM User before you can complete the below steps success
     - Region: `Select Your working Region`
     - Click: `CREATE Bucket`
 
-## 5) Satic Application Security Testing (SAST) With PMD (Programming Mistake Detector)
-* Navigate to the Folder name `pmd`
-    * Confirm that you have the `pmd-ruleset.xml` config file with the `rulesets`
-    ![PMDPOMConfig!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-16%20at%2012.21.21%20PM.png)
-* Also Confirm that the following command has been defined in your `pmd_buildspec.yml` in the `"buildspecs" folder`
-```bash
-cp ./pmd/pmd-ruleset.xml /root/.m2/pmd-ruleset.xml
-```
-* Verify that the destination path define above for the rulesets `/root/.m2/pmd-ruleset.xml` is specified in your maven `pom.xml` file as shown below.
-![PMDPOMConfig!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-16%20at%2012.11.51%20PM.png)
 
-## 6) Configure Continuous Alerting/Feedback Loop With AWS ChatBot and Slack
-### A) First We Need To Create an SNS Topic Which'll Act As Our Notification Bus
-* Navigate to the AWS SNS Service
-* Select your project Region
-![SNS!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-17%20at%209.11.40%20AM.png)
-  * Type: `Standard` 
-  * Name: `ChatBot-Slack-Integration-Topic`
-  * Display name: `ChatBot-Slack-Integration-Topic`
-  * Click `Create topic`
+## 5) Sign Up For SonarCloud Account
+A) Sign up for SonarCloud using this URL: https://sonarcloud.io or https://sonarcloud.io/login 
+![SonarCloud!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-06%20at%2012.59.04%20PM.png)
+- Click on `SIGN UP`
+- Click Sign Up With `GITHUB`
+- Sign in with your `“GitHub” Account`
+- Click on `“Authorize SonarCloud”`
+    - **NOTE:** Once you Authorize SonarCloud, It’ll take you directly to Dashboard (Similar to Traditional SonarQube Server Dashboard but this is cloud based)
 
-### B) Click on the following Link to Join the Slack `Workspace` & Create a Channel
-* Link: https://jjtechtowerba-zuj7343.slack.com 
-* Click on `Add channels` and select `Create a new channel` to create a Changel
-    * Name: `YOUR-FIRST-&-LASTNAME-INITIAL-aws-native-cicd-project-alerts`
-    ![Slack!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-17%20at%201.51.41%20AM.png)
-    * Select `Private` and 
-    * Click `Create` and Skip the option to add members to the channel
+B) We have to Generate a Token which CodeBuild will use during the Maven Execution
+![SonarCloud2!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-06%20at%201.03.17%20PM.png)
+- Click on your Profile at the Top right and click on `My Account`
+- Click on `Security`
+- Generate Tokens (Provide a Name): `aws-native-cicd-pipeline-project`
+- Copy the Token and Save it somewhere (on your NOTEPAD)
 
-### C) Create an AWS ChatBot Client
-* Navigate to `AWS ChatBot` Service
-* Open the service and Select Slack
-![ChatBot!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-17%20at%201.59.11%20AM.png)
+C) Click on the “+”  symbol at the Top Right
+![SonarCloud3!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-06%20at%201.06.19%20PM.png)
+- Click on Analyze new project
+- Click on `create a project manually`.
+    - Click on `Create another organization` 
+        - Name (Must be Unique): `yourfirst-or-lastname-aws-devops-org`
+        - Choose a plan: Select `“Free Plan”`
+        - Click on `Create Organization`
 
-![ChatBot!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/sasasasasasasasasasas.png)
+D) Create a SonarCloud Project
+- Click on `Create Project`
+    - Project Key: `aws-native-cicd-pipeline-project`
+    - Display name: `This Will Populate Automatically`
+    - Public/Private: Public  (because we’re using a free account)
+    - Click on `Next`
+    ![SonarCloud4!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-09%20at%2011.07.09%20AM.png)
+    - Select `Previous version`
+    - Click on `Create Project`
+**NOTE** **Save your `Project Name` as well on Notepad, Save your `Organization name` and the Sonarcloud url (`https://sonarcloud.io`). Make sure your `Token` has been saved also.
 
-* Configure Slack Integration In AWS ChatBot
-![ChatBot!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-17%20at%208.49.32%20AM.png)
-* Configuration name: `AWS-CICD-Pipeline-Project-ChatBot-Config`
-* Channel type: `Private`
-    * Channel ID: `Follow The Steps Below To Get The Chanel ID and Pass it Here`
-    ![ChatBot!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-17%20at%208.59.19%20AM.png)
-* Role settings: `Channel role`
-* Channel role: `Create an IAM Role Using a Template`
-* Role name: `ChatBot-Slack-Integration-Role`
-* Policy templates: Make sure `Notification permissions` and `Resource Explorer Permissions` roles are selected
-* Policy name: `ReadOnlyAccess`
-* SNS topics
-    * Region 1: Select `Your Working/Topic Region`
-    * Topics 1: Select `Your Topic`, which should be `ChatBot-Slack-Integration-Topic`
-
-* Click on `Configure`
-
-### D) Add The AWS ChatBot App To Your Slack Channel
-* Navigate to `Slack`
-* Right Click on your Channel Name and select `view chanel details`
-![SlackAWSChatBot!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-17%20at%201.58.33%20PM.png)
-* Add the `AWS ChatBot` App to your Pipeline Channel
-![SlackAWSChatBot!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-17%20at%202.01.29%20PM.png)
-
-## 7) Create & Configure CodeArtifact Repository to Store and Manage All Application Maven Dependencies.
+## 6) Create & Configure CodeArtifact Repository to Store and Manage All Application Maven Dependencies.
 ### A) Create CodeArtifact Project Repository
 * Navigate to AWS `CodeArtifact` 
 * Click on `Repository`
@@ -176,19 +151,19 @@ cp ./pmd/pmd-ruleset.xml /root/.m2/pmd-ruleset.xml
     - `COPY` the Repository `id` and Paste it in the `settings.xml` file on `line 29` at the time of this
     - `COPY` the Repository `url` and Paste on `Line 18` and `Line 30` in the `settings.xml` at the time of this
     - `SAVE` the changes made in the file
-    ![CodeArtifact!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-16%20at%201.14.26%20PM.png)
+    ![CodeArtifact!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-09%20at%2012.54.34%20AM.png)
 
 ### B.2) Update the POM.xml File With CodeArtifact Repository Configurations
   * Still on `“View Connection Instructions”` in `maven-central-store`
   ![CodeArtifact!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-09%20at%2012.51.13%20AM.png)
   * Under Step 5: 
-    - `COPY` the Repository `id` and Paste it in the `POM.xml` file on `Line 32` at the time of this
-    - `COPY` the Repository `url` and Paste on `Line 33` in the `POM.xml` at the time of this
+    - `COPY` the Repository `id` and Paste it in the `POM.xml` file on `Line 75` at the time of this
+    - `COPY` the Repository `url` and Paste on `Line 76` in the `POM.xml` at the time of this
     - `SAVE` the changes made in the file
     - `COMMIT` the changes and `PUSH` to UpStream to `CodeCommit`
-    ![CodeArtifact!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-16%20at%201.19.35%20PM.png)
+    ![CodeArtifact!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-09%20at%201.03.00%20AM.png)
 
-## 8) Store Your AWS CodeArtifact Repository Access Token In SSM Parameter Store
+## 7) Store Your AWS CodeArtifact & SonarCloud Project Parameters/Values In SSM Parameter Store
 - Navigate to SSM
 - **NOTE!!** Make sure you create the parameters in the same Region as the bucket (same for all project resources)
 ![ssmps!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-06%20at%201.18.36%20PM.png)
@@ -196,15 +171,33 @@ cp ./pmd/pmd-ruleset.xml /root/.m2/pmd-ruleset.xml
   - Click on `Create Parameter`
   - Name: `CODEARTIFACT_AUTH_TOKEN`
   - Type: Select `Secure/String`
-  - Value: `provide your CodeArtifact Token` the one you copied when you ran the command...
-  ```bash
-  echo $CODEARTIFACT_AUTH_TOKEN
-  ```
+  - Value: `provide your CodeArtifact Token` the one you copied when you ran `echo $CODEARTIFACT_AUTH_TOKEN`
 
-![ssmps!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-16%20at%2012.51.13%20PM.png)
-**NOTE:** Confirm that this same parameter names exist in your `pmd_buildspec.yaml` configuration.
+- **a)** Click on `Parameter Store`
+  - Click on `Create Parameter`
+  - Name: `Organization`
+  - Type: Select `String`
+  - Value: `provide your SnarCloud Org name`
 
-## 9) Create The Project Build Job in CodeBuild
+- **b)** Click on `Parameter Store`
+  - Name: `HOST`
+  - Type: Select `String`
+  - Value: https://sonarcloud.io
+
+- **c)** Click on `Parameter Store`
+  - Name: `Project`
+  - Type: Select `String`
+  - Value: `provide your SonaCloud Project name`
+
+- **d)** Click on `Parameter Store`
+  - Name: `sonartoken`
+  - Type: Select `Secure/String`
+  - Value: `provide your SonaCloud Project Token`
+**NOTE:** Confirm that these same parameter names exist in your `sonacloud_buildspec.yaml` configuration.
+#### 7.1) Confirm That Have All Required Parameters Created With Their Respective Values
+![ssmps!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-09%20at%2010.32.08%20AM.png)
+
+## 8) Create The Project Build Job in CodeBuild
 - Navigate To The AWS `CodeBuild` Service
 ![CodeBuild!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-03%20at%206.17.16%20PM.png)
 - Click on `Create Build Project` 
@@ -212,9 +205,9 @@ cp ./pmd/pmd-ruleset.xml /root/.m2/pmd-ruleset.xml
     - Source Provider: Select `AWS CodeCommit`
     - Repository: Select `AWS-Native-CICD-Pipeline-Project`
     - Branch: `master`
-    - Operating System: `Amazon Linux`
+    - Operating System: `Ubuntu`
     - Runtime: `Standard`
-    - Image: MUST USE  (`aws/codebuild/amazonlinux2-x86_64-standard:5.0`) or latest
+    - Image: MUST USE  (`aws/codebuild/standard:5.0`) or else it’ll BREAK
     - Image version: Select `Always use the latest for this runtime version` 
     - Environment type: Select `Linux EC2`
     - Service Role: `Existing Service Role`
@@ -224,7 +217,6 @@ cp ./pmd/pmd-ruleset.xml /root/.m2/pmd-ruleset.xml
     - Artifacts:
         - Type: Select `Amazon S3`
         - Bucket name: Select your bucket `java-webapp-project-artifact-YOUR_ACCOUNT_ID`
-        - Name: `CodeBuild-Build-Artifact`
         - Artifacts packaging: Select `Zip`
     - Logs
         - CloudWatch Logs: `Enable`
@@ -232,36 +224,33 @@ cp ./pmd/pmd-ruleset.xml /root/.m2/pmd-ruleset.xml
         - Stream name: `Java-Webapp-CodeBuild-Build-Logs`
     - CLICK: Click `CREATE BUILD PROJECT`
 
-## 10) Create The PMD Code Analysis Job in CodeBuild
+## 9) Create The SonarCloud Code Analysis Job in CodeBuild
 - Navigate To The AWS `CodeBuild` Service
 ![CodeBuild!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/patisdsd_dah_sada.png)
 - Click on `Create Build Project` 
-    - Project Name: `Java-Webapp-CB-PMD-Job`
+    - Project Name: `Java-Webapp-CB-SonarCloud-Job`
     - Source Provider: Select `AWS CodeCommit`
     - Repository: Select `AWS-Native-CICD-Pipeline-Project`
     - Branch: `master`
-    - Operating System: `Amazon Linux`
+    - Operating System: `Ubuntu`
     - Runtime: `Standard`
-    - Image: MUST USE  (`aws/codebuild/amazonlinux2-x86_64-standard:5.0`) or latest
+    - Image: MUST USE  (`aws/codebuild/standard:5.0`) or else it’ll BREAK
     - Image version: Select `Always use the latest for this runtime version` 
     - Environment type: Select `Linux EC2`
     - Service Role: `Existing Service Role`
         - Role name: Select `AWS-CodeBuild-Admin-Role` 
         - Allow AWS CodeBuild to modify this service role so it can be used with this build project: `Disable/Uncheck`
-    - Build Specifications: Pass `buildspecs/pmd_buildspec.yml`
+    - Build Specifications: Pass `buildspecs/sonarcloud_buildspec.yml`
     - Artifacts:
-        - Type: Select `Amazon S3`
-        - Bucket name: Select your bucket `java-webapp-project-artifact-YOUR_ACCOUNT_ID`
-        - Name: `PMD-Test-Results`
-        - Artifacts packaging: Select `Zip`
+        - Type: Select `No Artifact`
     - Logs
         - CloudWatch Logs: `Enable`
         - Group Name: `Java-Webapp-CodeBuild-Project-Logs`
-        - Stream name: `Java-Webapp-CodeBuild-PMD-Logs`
+        - Stream name: `Java-Webapp-CodeBuild-SonarCloud-Logs`
     - CLICK: Click `CREATE BUILD PROJECT`
-![CodeBuild!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-16%20at%201.45.44%20PM.png)
+![CodeBuild!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-09%20at%2012.04.26%20PM.png)
 
-## 11) Create Staging Deployment Area/Environment
+## 10) Create Staging Deployment Area/Environment
 - Navigate to EC2
 ![EC2!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-03%20at%206.34.34%20PM.png)
 - Click `Launch Instances`
@@ -284,7 +273,7 @@ cp ./pmd/pmd-ruleset.xml /root/.m2/pmd-ruleset.xml
             - Open Port `22` to eith your Network or Internet
     - Edvance Details:
         - IAM instance profile: `Select an EC2 Admin Role`
-            - NOTE: `If you do not have one, please go ahead and create before creating the instance`
+            - NOTE: `If you do not have one, please go ahead and create before creating instance`
             - NOTE: `If Not Yours Will Break`
         - User data: 
         ```bash
@@ -301,7 +290,7 @@ cp ./pmd/pmd-ruleset.xml /root/.m2/pmd-ruleset.xml
 
         - Click `Launch Instance`
 
-## 12) Create Production Deployment Area/Environment
+## 11) Create Production Deployment Area/Environment
 ![EC2!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-03%20at%206.34.34%20PM.png)
 - Navigate to EC2
 - Click `Launch Instances`
@@ -322,7 +311,7 @@ cp ./pmd/pmd-ruleset.xml /root/.m2/pmd-ruleset.xml
             - Security group: Select `Tomcat-App-SG`
     - Edvance Details:
         - IAM instance profile: Select an EC2 Admin Role
-            - NOTE: `If you do not have one, please go ahead and create before creating the instance`
+            - NOTE: `If you do not have one, please go ahead and create before creating instance`
             - NOTE: `If Not Yours Will Break`
         - User data: 
         ```bash
@@ -338,10 +327,10 @@ cp ./pmd/pmd-ruleset.xml /root/.m2/pmd-ruleset.xml
         ```
 
         - Click `Launch Instance`
-#### 12.1) Confirm that you have both the Stage and Prod Environments
+#### 11.1) Confirm that you have both the Stage and Prod Environments
 ![Stage&ProdInstances!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-09%20at%2010.25.51%20AM.png)
 
-## 13) Create CodeDeploy Application
+## 12) Create CodeDeploy Application
 - Navigate to CodeDeploy
 ![CDApp!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-03%20at%205.11.57%20PM.png)
 - Click on `Applications`
@@ -350,7 +339,7 @@ cp ./pmd/pmd-ruleset.xml /root/.m2/pmd-ruleset.xml
         - Compute Platform: `EC2/On-premises`
         - Click `Create Application`
 
-## 14) Create A CodeDeploy Deployment Group To Deploy Staging Env
+## 13) Create A CodeDeploy Deployment Group To Deploy Staging Env
 - Navigate to CodeDeploy
 ![CDApp!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-03%20at%206.26.42%20PM.png)
 - Click on `Applications`
@@ -369,7 +358,7 @@ cp ./pmd/pmd-ruleset.xml /root/.m2/pmd-ruleset.xml
         - Load balancer: Uncheck the box to `Disable`
         - Click `Create deployment group`
 
-## 15) Create A CodeDeploy Deployment Group For The Production Env
+## 14) Create A CodeDeploy Deployment Group For The Production Env
 - Navigate to CodeDeploy
 ![CDApp!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-03%20at%206.26.42%20PM.png)
 - Click on `Applications`
@@ -388,7 +377,7 @@ cp ./pmd/pmd-ruleset.xml /root/.m2/pmd-ruleset.xml
         - Load balancer: Uncheck the box to `Disable`
         - Click `Create deployment group`
 
-## 16) Create The CI/CD Automation Pipeline With CodePipeline
+## 15) Create The CI/CD Automation Pipeline With CodePipeline
 - Navigate to `CodePipeline`
 ![CP!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Pipeline.png)
 - Click on `Create Pipeline`
@@ -401,7 +390,7 @@ cp ./pmd/pmd-ruleset.xml /root/.m2/pmd-ruleset.xml
     - Source provider: Select `AWS CodeCommit`
         - Repository name: `AWS-Native-CICD-Pipeline-Project`
         - Branch name: `Master`
-        - Change detection options: Select `Amazon CloudWatch Events (recommended)`
+        - Change detection options: `Amazon CloudWatch Events (recommended)`
         - Output artifact format: `CodePipeline default`
         - Click `Next`
     - **BUILD PROVIDER**
@@ -418,10 +407,10 @@ cp ./pmd/pmd-ruleset.xml /root/.m2/pmd-ruleset.xml
         - Click `Next`
     
     - Click `CREATE PIPELINE`
-    - **NOTE:** Once you create the pipeline, it'll start Running Immediate. CLICK ON `STOP EXECUTION`
-    ()
+    - NOTE: Once you create the pipeline, it'll start Running Immediate. Just wait for all the various stages to complete
+    - **NOTE2:** The Deployment Will Only Take Place In The Staging Environment (With Continuous Deployment)
 
-## 17) Add The SAST Test Stage With PMD Test Stage
+## 16) Add The SAST Test Stage With SonarCloud
 ![EditPipeline!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/dsdsdsdsd.png)
 - Click on `Edit` to add the following Pipeline Stages;
     - The `Testing Stage`
@@ -429,22 +418,22 @@ cp ./pmd/pmd-ruleset.xml /root/.m2/pmd-ruleset.xml
     - The `Prod Deployment Stage`
 - Click on `Add stage`
 - **NOTE:** Make sure to add this Stage in between the `Build` and `Desploy` Stage
-![SASTStage!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-16%20at%202.03.54%20PM.png)
-- Stage name: `SAST-Test-PMD`
+![SASTStage!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-07%20at%201.33.14%20PM.png)
+- Stage name: `SAST-Test-SonarCloud`
 - Click on `Add action group`
-  - Action name: `SAST-Test-PMD`
+  - Action name: `SAST-Test-SonarCloud`
   - Action provider: `AWS CodeBuild`
   - Region: `Select your project region`
   - Input artifact: `SourceArtifact`
-  - Project name: `Select Your PMD CodeBuild Job/Project`
+  - Project name: `Select Your SonarCloud CodeBuild Job/Project`
   - Build type: `Single build`
   - Click `Done`
 
   - Click on `Done` again
 
-## 18) Add The Manual Approval Stage (To Achieve Continuous Delivery To Production)
+## 17) Add The Manual Approval Stage (To Achieve Continuous Delivery To Production)
 - Click on `Add stage`
-![AddMA!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-16%20at%202.07.58%20PM.png)
+![AddMA!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-07%20at%202.07.16%20PM.png)
 - Stage name: `Manual-Approval`
 
 - Click on `Add action group`
@@ -455,7 +444,7 @@ cp ./pmd/pmd-ruleset.xml /root/.m2/pmd-ruleset.xml
 
   - Click on `Done` again
 
-## 19) Add The Deploy To Production Stage With CodeDeploy
+## 18) Add The Deploy To Production Stage With CodeDeploy
 - Click on `Add stage`
 ![DeployProd!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-06%20at%202.10.51%20PM.png)
 - Stage name: `Deploy-Prod`
@@ -472,82 +461,55 @@ cp ./pmd/pmd-ruleset.xml /root/.m2/pmd-ruleset.xml
   - `SCROLL UP` and Click on `SAVE`
   - Click `SAVE`
 
-## 20) Integrate The AWS ChatBot/Slack Configuration With Your Pipeline
-* Confirm that you've added all pipeline Stages
-* Click on `Notify`
-    * Click on `Create notification rule`
-![PipelineNotifier!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-17%20at%209.46.41%20AM.png)
-* Name: `Slack-Notification`
-* Detail type: `Basic`
-* Events that trigger notifications: `Select Important Events`
-![EditPipeline!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-17%20at%2010.22.24%20AM.png)
-* Targets
-    * Choose target type: `AWS ChatBot Slack`
-    * Choose target: Select your ChatBot Config `AWS-CICD-Pipeline-Project-ChatBot-Config`
-    * Click `SUBMIT`
-
-### 21) RE-RUN YOUR PIPELINE and CONFIRM THE APP IS AVAILABLE IN STAGING ENV BEFORE APPROVING PRODUCTION
-- Click on `Pipeline` on your left
+### 19) RE-RUN YOUR PIPELINE and CONFIRM THE APP IS AVAILABLE IN STAGING ENV BEFORE APPROVING PRODUCTION
 - CLICK on `Release Change`
 ![ReRunPipeline!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-09%20at%2012.45.43%20PM.png)
 
-#### 22) Slack Notification With AWS ChatBot
-* Check Your Pipeline Slack Channel For Updates Regarding Your Pipeline
-![ReRunPipeline!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-17%20at%2010.29.11%20AM.png)
-
-#### 23) Test To The Application Running In The Staging Environment
+#### 19.1) Test To The Application Running In The Staging Environment
 * Navigate to EC2 
 * Copy the Public IP Addresses of the `Stage Instance` and Try Accessing the Application
-* URL: http://INSTANCE_PUBLIC_IP:8080/login 
-![WebApp!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-16%20at%203.04.28%20PM.png)
+* URL: http://INSTANCE_PUBLIC_IP:8080/javawebapp 
+![WebApp!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/user_login_application_test_successful.png)
 
-### 24) REVIEW AND APPROVE PRODUCTION DEPLOYMENT
+### REVIEW AND APPROVE PRODUCTION DEPLOYMENT
 - Once you Confirm that The Application is working as Expected...
-- Click on `Review` 
-- Then `APPROVE` to Deploy to the `Prod Environment`
-![SuccessPipeResults!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-16%20at%203.30.14%20PM.png)
-![SuccessPipeResults!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-16%20at%203.31.11%20PM.png)
-![SuccessPipeResults!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-16%20at%203.31.33%20PM.png)
+- You Then `APPROVE PROD` Deployment
+![SuccessPipeResults!](https://lucid.app/publicSegments/view/747b2c4f-4f8b-4e1b-b83e-377c91a09cd8/image.png)
 
-### 25) REVIEW ALL JOBS (Whle The Pipeline Is Running)
+### 20) REVIEW ALL JOBS (Whle The Pipeline Is Running)
 - Go through the *`CodeArtifact Downloaded Dependencies`*
 - Go through the *`CodeBuild Build & Test Job Outputs`*
 - Go through the *`CodeDeploy Stage & Prod Prod Deployment Results`*
-- Go through the *`PMD Project/Analysis` etc*
-    - *Download the Reports From s3. The CodePipeline Bucket >> BuildArtifact*
-    - *Navigate to server --> target --> site --> Click on the `pmd.html` Report*
+- Go through the *`SonarCloud Project/Analysis` etc*
 
-#### 25A) CodeArtifact Maven Project Repository
+#### 20A) CodeArtifact Maven Project Repository
 i) CodeArtifact `maven-central-store` (These Dependencies Where All Downloaded From `Maven Central` and Stored Here)
 ![CodeArtifact!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-09%20at%203.35.20%20AM.png)
 
 ii) CodeBuild Project Logs (Build and Test Jobs)
 ![CodeArtifact!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-09%20at%2012.58.45%20PM.png)
 
-#### 25B) Continuous Pipeline Notification With AWS ChatBot & Slack
-![ChatBotSlack!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-17%20at%2010.29.11%20AM.png)
-
-#### 25C) CodeBuild Build Job Results
+#### 20B) CodeBuild Build Job Results
 ![CodeBuildBuildJob!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-09%20at%203.12.18%20AM.png)
 
-#### 25D) CodeBuild PMD SAST Job Results
-![CodeBuildSASTJob!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-16%20at%203.16.47%20PM.png)
+#### 20C) CodeBuild SonaCloud SAST Job Results
+![CodeBuildSASTJob!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-09%20at%203.17.50%20AM.png)
 
-#### 25E) PMD SAST Test Results
-![CodeBuildSASTtestResults!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-16%20at%203.20.27%20PM.png)
+#### 20D) SonaCloud SAST Test Results
+![CodeBuildSASTtestResults!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-09%20at%203.21.56%20AM.png)
 
-#### 25F) CodeDeploy Deployment Results (Stage&Prod)
+#### 20E) CodeDeploy Deployment Results (Stage&Prod)
 - Navigate to `CodeDeploy`
 ![CodeDeploy!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-09%20at%203.28.15%20AM.png)
 
-### 26) CONFIRM THAT THE APPLICATION VALIDATE TEST PASSED
+### 21) CONFIRM THAT THE APPLICATION VALIDATE TEST PASSED
 ![CodeDeploy!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-09%20at%209.26.28%20AM.png)
 
-### 29) TEST ACCESS TO THE APPLICATION
+### 22) TEST ACCESS TO THE APPLICATION
 * Navigate to EC2 
 * Copy the Public IP Addresses of the Instances and Try Accessing the Application
-* URL: http://INSTANCE_PUBLIC_IP:8080/login 
-![WebApp!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/Screen%20Shot%202023-10-16%20at%203.25.08%20PM.png)
+* URL: http://INSTANCE_PUBLIC_IP:8080/javawebapp 
+![WebApp!](https://github.com/awanmbandi/realworld-cicd-pipeline-project/blob/zdocs/images/user_login_application_test_successful.png)
 
 ## 👨‍💻😃 CONGRATULATIONS TEAM!! CONGRATULATIONS TEAM!! 👨‍💻😃
 
